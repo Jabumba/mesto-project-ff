@@ -1,94 +1,52 @@
-const popup = document.querySelectorAll('.popup');
+const popupProfile = document.querySelectorAll('.popup')[0];
+const popupCard = document.querySelectorAll('.popup')[1];
+const popupImage = document.querySelectorAll('.popup')[2];
+
 const profileButton = document.querySelector('.profile__edit-button');
 const cardButton = document.querySelector('.profile__add-button');
-const popupClose = document.querySelectorAll('.popup__close');
+const imageButton = document.querySelector('.places__list');
+
+const profileButtonClose = document.querySelectorAll('.popup__close')[0];
+const cardButtonClose = document.querySelectorAll('.popup__close')[1];
+const imageButtonClose = document.querySelectorAll('.popup__close')[2];
+
 const profileTitle = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
 
 
 
-function closeWithButton(evt) {
+function closePopupByEscKey(evt) {
     if(evt.key === 'Escape') {
-        popup[0].classList.remove('popup_is-animated');
-        popup[1].classList.remove('popup_is-animated');
-        popup[2].classList.remove('popup_is-animated');
+        popupProfile.classList.remove('popup_is-opened');
+        popupCard.classList.remove('popup_is-opened');
+        popupImage.classList.remove('popup_is-opened');
     };
 };
 
-function openModal(evt) {
-    switch(evt.target) {
-        case profileButton:
-            popup[0].classList.add('popup_is-animated');
-            popup[0].style.opacity = '1'
-            popup[0].style.visibility = 'visible'
-            popup[0].querySelector('.popup__input_type_name').value = profileTitle.textContent;
-            popup[0].querySelector('.popup__input_type_description').value = profileDescription.textContent;
+function closePopupByOverlay(evt) {
+    if (evt.target.classList.contains('popup')) {
+        closeModal(evt.target);
+    };
+};
 
-            document.addEventListener('keydown', closeWithButton);
-            break;
-        case cardButton:
-            popup[1].classList.add('popup_is-animated');
-            popup[1].style.opacity = '1'
-            popup[1].style.visibility = 'visible'
+function openModal(modal) {
+    modal.classList.add('popup_is-opened');
+    document.addEventListener('keydown', closePopupByEscKey);
+    modal.addEventListener('click', closePopupByOverlay);
 
-            document.addEventListener('keydown', closeWithButton);
-            break;
-        default:
+    if(modal === popupProfile) {
+        popupProfile.querySelector('.popup__input_type_name').value = profileTitle.textContent;
+        popupProfile.querySelector('.popup__input_type_description').value = profileDescription.textContent;
+    };
+};
 
-            if(evt.target.classList.contains('card__image')) {
-                popup[2].classList.add('popup_is-animated');
-                popup[2].style.opacity = '1'
-                popup[2].style.visibility = 'visible'
-                popup[2].querySelector('.popup__image').src = evt.target.src;
-                popup[2].querySelector('.popup__caption').textContent = evt.target.alt;
+function closeModal(modal) {
+    modal.classList.remove('popup_is-opened');
+    document.removeEventListener('keydown', closePopupByEscKey);
+    modal.removeEventListener('click', closePopupByOverlay);
+};
 
-                document.addEventListener('keydown', closeWithButton);
-            };
-            break;
-    }
-}
-
-function closeModal(evt) {
-    switch(evt.target) {
-        case popup[0]:
-            popup[0].style.opacity = '0'
-            popup[0].style.visibility = 'hidden'
-            popup[0].classList.remove('popup_is-animated');
-            document.removeEventListener('keydown', closeWithButton);
-            break;
-        case popup[1]:
-            popup[1].style.opacity = '0'
-            popup[1].style.visibility = 'hidden'
-            popup[1].classList.remove('popup_is-animated');
-            document.removeEventListener('keydown', closeWithButton);
-            break;
-        case popup[2]:
-            popup[2].style.opacity = '0'
-            popup[2].style.visibility = 'hidden'
-            popup[2].classList.remove('popup_is-animated');
-            document.removeEventListener('keydown', closeWithButton);
-            break;
-    }
-}
-
-function closeButton(evt) {
-    switch(evt.target) {
-        case popupClose[0]:
-            popup[0].classList.remove('popup_is-animated');
-            document.removeEventListener('keydown', closeWithButton);
-            break;
-        case popupClose[1]:
-            popup[1].classList.remove('popup_is-animated');
-            document.removeEventListener('keydown', closeWithButton);
-            break;
-        case popupClose[2]:
-            popup[2].classList.remove('popup_is-animated');
-            document.removeEventListener('keydown', closeWithButton);
-            break;
-    }
-}
-
-function handleFormSubmit(evt) {
+function profileDataSubmit(evt) {
     evt.preventDefault();
     const jobValue = evt.target.querySelector('.popup__input_type_description').value;
     const nameValue = evt.target.querySelector('.popup__input_type_name').value;
@@ -100,6 +58,8 @@ function handleFormSubmit(evt) {
     
     profileTitle.textContent = nameValue;
     profileDescription.textContent = jobValue;
-}
+    
+    closeModal(popupProfile);
+};
 
-export { closeWithButton, openModal, closeModal, closeButton, handleFormSubmit };
+export { closePopupByEscKey, openModal, closeModal, profileDataSubmit, closePopupByOverlay };
