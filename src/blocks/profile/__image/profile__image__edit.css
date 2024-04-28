@@ -1,0 +1,17 @@
+.profile__avatar__edit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 120px;
+    height: 120px;
+    background-color: rgba(0, 0, 0, 0.8);
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    visibility: hidden;
+}
+
+.profile__image:hover .profile__avatar__edit {
+    visibility: visible;
+    cursor: pointer;
+}

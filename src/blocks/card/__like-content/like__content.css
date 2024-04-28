@@ -1,0 +1,6 @@
+.like__content {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    overflow: hidden;
+}

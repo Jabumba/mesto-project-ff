@@ -1,25 +1,6 @@
-const popupProfile = document.querySelectorAll('.popup')[0];
-const popupCard = document.querySelectorAll('.popup')[1];
-const popupImage = document.querySelectorAll('.popup')[2];
-
-const profileButton = document.querySelector('.profile__edit-button');
-const cardButton = document.querySelector('.profile__add-button');
-const imageButton = document.querySelector('.places__list');
-
-const profileButtonClose = document.querySelectorAll('.popup__close')[0];
-const cardButtonClose = document.querySelectorAll('.popup__close')[1];
-const imageButtonClose = document.querySelectorAll('.popup__close')[2];
-
-const profileTitle = document.querySelector('.profile__title');
-const profileDescription = document.querySelector('.profile__description');
-
-
-
 function closePopupByEscKey(evt) {
     if(evt.key === 'Escape') {
-        popupProfile.classList.remove('popup_is-opened');
-        popupCard.classList.remove('popup_is-opened');
-        popupImage.classList.remove('popup_is-opened');
+        closeModal(document.querySelector('.popup_is-opened'));
     };
 };
 
@@ -30,14 +11,14 @@ function closePopupByOverlay(evt) {
 };
 
 function openModal(modal) {
+    const button = modal.querySelector('.popup__button');
+    if(modal.classList.contains('popup_type_new-card') || 
+    modal.classList.contains('popup_type_edit') || modal.classList.contains('popup_type_avatar-edit')) {
+        button.textContent = 'Сохранить';
+    }
     modal.classList.add('popup_is-opened');
     document.addEventListener('keydown', closePopupByEscKey);
     modal.addEventListener('click', closePopupByOverlay);
-
-    if(modal === popupProfile) {
-        popupProfile.querySelector('.popup__input_type_name').value = profileTitle.textContent;
-        popupProfile.querySelector('.popup__input_type_description').value = profileDescription.textContent;
-    };
 };
 
 function closeModal(modal) {
@@ -46,20 +27,4 @@ function closeModal(modal) {
     modal.removeEventListener('click', closePopupByOverlay);
 };
 
-function profileDataSubmit(evt) {
-    evt.preventDefault();
-    const jobValue = evt.target.querySelector('.popup__input_type_description').value;
-    const nameValue = evt.target.querySelector('.popup__input_type_name').value;
-
-    
-    const profileTitle = document.querySelector('.profile__title');
-    const profileDescription = document.querySelector('.profile__description');
-
-    
-    profileTitle.textContent = nameValue;
-    profileDescription.textContent = jobValue;
-    
-    closeModal(popupProfile);
-};
-
-export { closePopupByEscKey, openModal, closeModal, profileDataSubmit, closePopupByOverlay };
+export { closePopupByEscKey, openModal, closeModal, closePopupByOverlay };

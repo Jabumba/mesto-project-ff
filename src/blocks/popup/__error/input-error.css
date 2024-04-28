@@ -1,0 +1,10 @@
+.form__input-error {
+    max-width: 100%;
+    color: rgba(255, 0, 0, 1);
+    overflow-wrap: break-word;
+    font-family: Inter;
+    font-size: 12px;
+    /* line-height: 14.52px; */
+    font-weight: 400;
+    text-align: left;
+}
