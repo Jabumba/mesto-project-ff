@@ -6,33 +6,13 @@ const config = {
     }
 };
 
-export const getUserId = (ownerId, deleteButton, openCallback, popup, removeCallback) => {
-    fetch(`${config.baseUrl}/users/me`, {
-        method: 'GET',
-        headers: config.headers
-    })
-    .then((res) => {
-        if (res.ok) {
-            return res.json();
-        }
-    })
-    .then((data) => {
-        if(ownerId === data._id) {
-            deleteButton.addEventListener('click', () => {
-                const deleteYesButton = document.querySelector('.popup_type_delete .popup__button');
-                deleteYesButton.addEventListener('click', () => {
-                    removeCallback(deleteButton);
-                });
-                openCallback(popup)
-            });
-        } else {
-            deleteButton.remove()
-        }
-    })
-    .catch((err) => {
-        console.log(err);
-    }); ;
-};
+const handleResponse = (res) => {
+    if (res.ok) {
+        return res.json();
+    }
+
+    return Promise.reject(`Ошибка: ${res.status}`);
+}
 
 export const getCards = () => {
     return fetch(`${config.baseUrl}/cards`, {
@@ -40,13 +20,8 @@ export const getCards = () => {
         headers: config.headers
     })
     .then((res) => {
-        if (res.ok) {
-            return res.json();
-        }
+        return handleResponse(res);
     })
-    .catch((err) => {
-        console.log(err);
-    }); 
 };
   
 export const postNewCard = (cardName, cardUrl) => {
@@ -58,12 +33,12 @@ export const postNewCard = (cardName, cardUrl) => {
             link: cardUrl
         })
     })
-    .catch((err) => {
-        console.log(err);
-    });
+    .then((res) => {
+        return handleResponse(res);
+    })
 };
 
-export const editProfile = (name, job, form) => {
+export const editProfile = (name, job) => {
     return fetch(`${config.baseUrl}/users/me`, {
         method: 'PATCH',
         headers: config.headers,
@@ -72,60 +47,25 @@ export const editProfile = (name, job, form) => {
             about: job
         })
     })
-    .catch((err) => {
-        console.log(err);
-    });
 };
 
-export const getStartsCards = (createCard, openCallback, likeCallback, clickCallback) => {
-    return fetch(`${config.baseUrl}/cards`, {
-        method: 'GET',
-        headers: config.headers
-    })
-    .then((res) => {
-        if (res.ok) {
-            return res.json();
-        }
-    })
-    .then((data) => {
-        for(let i = 0; i < data.length; i++) {
-            createCard(data[i], openCallback, likeCallback, clickCallback);
-        };
-    })
-    .catch((err) => {
-        console.log(err);
-    });
-};
-
-export const getUserProfile = (userName, userAbout, userAvatar) => {
+export const getUserProfile = () => {
     return fetch(`${config.baseUrl}/users/me`, {
         method: 'GET',
         headers: config.headers
     })
     .then((res) => {
-        if (res.ok) {
-            return res.json();
-        }
+        return handleResponse(res);
     })
-    .then((data) => {
-        userName.textContent = data.name;
-        userAbout.textContent = data.about;
-        userAvatar.style.backgroundImage = `url(${data.avatar})`;
-    })
-    .catch((err) => {
-        console.log(err);
-    });
 };
 
-export const getUserInfo = () => {
+const getUserInfo = () => {
     return fetch(`${config.baseUrl}/users/me`, {
         method: 'GET',
         headers: config.headers
     })
     .then((res) => {
-        if (res.ok) {
-            return res.json();
-        }
+        return handleResponse(res);
     })
     .then((data) => {
         let userInfo =
@@ -138,9 +78,6 @@ export const getUserInfo = () => {
         }
         return userInfo
     })
-    .catch((err) => {
-        console.log(err);
-    });
 };
 
 export const editAvatar = (url) => {
@@ -151,30 +88,19 @@ export const editAvatar = (url) => {
             avatar: url
         })
     })
-    .catch((err) => {
-        console.log(err);
-    });
 };
 
 export const deleteCard = (id) => {
-    return fetch(`https://mesto.nomoreparties.co/v1/wff-cohort-11/cards/${id}`, {
+    return fetch(`${config.baseUrl}/cards/${id}`, {
         method: 'DELETE',
-        headers: {
-            authorization: '074e59d9-33a5-41d5-93b8-144bbab5c7cc'
-        }
+        headers: config.headers
     })
-    .catch((err) => {
-        console.log(err);
-    });
 };
 
 export const addLike = (cardId) => {
-    return fetch(`https://mesto.nomoreparties.co/v1/wff-cohort-11/cards/likes/${cardId}`, {
+    return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
         method: 'PUT',
-        headers: {
-            authorization: '074e59d9-33a5-41d5-93b8-144bbab5c7cc',
-            'Content-Type': 'application/json'
-        },
+        headers: config.headers,
         body: JSON.stringify({
             about: getUserInfo().userAbout,
             avatar: getUserInfo().userAvatar,
@@ -183,13 +109,17 @@ export const addLike = (cardId) => {
             _id: getUserInfo().userId
         })
     })
-};
+    .then((res) => {
+        return handleResponse(res);
+    })
+}
 
 export const removeLike = (cardId) => {
-    return fetch(`https://mesto.nomoreparties.co/v1/wff-cohort-11/cards/likes/${cardId}`, {
+    return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
         method: 'DELETE',
-        headers: {
-            authorization: '074e59d9-33a5-41d5-93b8-144bbab5c7cc'
-        }
+        headers: config.headers
+    })
+    .then((likes) => {
+        return handleResponse(likes);
     })
 };

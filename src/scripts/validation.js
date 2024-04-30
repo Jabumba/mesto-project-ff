@@ -38,8 +38,8 @@ const toggleButtonState = (inputList, buttonElement, obj) => {
         buttonElement.disabled = true;
         buttonElement.classList.add(obj.inactiveButtonClass); 
     } else {
-          buttonElement.disabled = false;
-          buttonElement.classList.remove(obj.inactiveButtonClass);
+        buttonElement.disabled = false;
+        buttonElement.classList.remove(obj.inactiveButtonClass);
     };
 };
 
@@ -51,13 +51,8 @@ const clearValidation = (formElement, obj) => {
         hideInputError(formElement, inputElement, obj);
     });
 
-    buttonElement.disabled = false;
-    buttonElement.classList.remove(obj.inactiveButtonClass);
-
-    if (formElement.name === 'new-place' || formElement.name === 'edit-image') {
-        buttonElement.disabled = true;
-        buttonElement.classList.add(obj.inactiveButtonClass);
-    };
+    buttonElement.disabled = true;
+    buttonElement.classList.add(obj.inactiveButtonClass);
 };
   
 const setEventListeners = (formElement, obj) => {
@@ -82,4 +77,4 @@ const enableValidation = (obj) => {
     });
 };
 
-export { showInputError, hideInputError, isValid, hasInvalidInput, toggleButtonState, setEventListeners, enableValidation, clearValidation }
+export { enableValidation, clearValidation }
