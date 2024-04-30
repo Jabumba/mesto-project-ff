@@ -13,6 +13,13 @@ const selectorValidation = {
     errorClass: 'form__input-error'
 }
 
+let userId;
+getUserProfile()
+.then((user) => {
+    userId = user._id;
+})
+.catch(err => console.log(err))
+
 const cardList = document.querySelector('.places__list');
 
 const popupProfile = document.querySelector('.popup_type_edit');
@@ -55,18 +62,9 @@ function addCard(evt) {
     const button = evt.target.querySelector('.popup__button');
     const cardName = document.querySelector('.popup__input_type_card-name').value;
     const cardUrl = document.querySelector('.popup__input_type_url').value;
-
-    let userId;
-    Promise.all([getUserProfile(), postNewCard(cardName, cardUrl)])
-    .then(([user, data]) => {
-        userId = user._id;
     
-        profileTitle.textContent = user.name;
-        profileDescription.textContent = user.about;
-        profileImage.style.backgroundImage = `url(${user.avatar})`;
-
-
-
+    postNewCard(cardName, cardUrl)
+    .then((data) => {
         const card = createCard(data, likeButton, clickImage, userId);
         cardList.prepend(card);
     })
@@ -168,11 +166,8 @@ enableValidation(
     selectorValidation
 );
 
-let userId;
 Promise.all([getUserProfile(), getCards()])
 .then(([user, cards]) => {
-    userId = user._id;
-    
     profileTitle.textContent = user.name;
     profileDescription.textContent = user.about;
     profileImage.style.backgroundImage = `url(${user.avatar})`;
