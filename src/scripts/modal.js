@@ -11,7 +11,6 @@ function closePopupByOverlay(evt) {
 };
 
 function openModal(modal) {
-    const button = modal.querySelector('.popup__button');
     modal.classList.add('popup_is-opened');
     document.addEventListener('keydown', closePopupByEscKey);
     modal.addEventListener('click', closePopupByOverlay);

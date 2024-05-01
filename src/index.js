@@ -1,10 +1,10 @@
 import './pages/index.css';
-import { closePopupByEscKey, openModal, closeModal, closePopupByOverlay } from './scripts/modal';
+import { closePopupByEscKey, openModal, closeModal } from './scripts/modal';
 import { createCard, removeButton, likeButton } from './scripts/card';
 import { enableValidation, clearValidation } from './scripts/validation';
 import { getCards, postNewCard, editProfile, getUserProfile, editAvatar } from './scripts/api';
 
-const selectorValidation = {
+const validationConfig = {
     formSelector: '.popup__form',
     inputSelector: '.popup__input',
     submitButtonSelector: '.popup__button',
@@ -67,15 +67,16 @@ function addCard(evt) {
     .then((data) => {
         const card = createCard(data, likeButton, clickImage, userId);
         cardList.prepend(card);
+        button.textContent = 'Сохранение...';
     })
     .catch(err => console.log(err))
     .finally(() => {
-        button.textContent = 'Сохранение...';
+        button.textContent = 'Сохранить';
     })
 
     closeModal(popupCard)
     evt.target.reset();
-    clearValidation(evt.target, selectorValidation);
+    clearValidation(evt.target, validationConfig);
 };
 
 function profileDataSubmit(evt) {
@@ -85,17 +86,18 @@ function profileDataSubmit(evt) {
     const nameValue = evt.target.querySelector('.popup__input_type_name').value;
 
     editProfile(nameValue, jobValue)
+    .then(() => {
+        button.textContent = 'Сохранение...';
+    })
     .catch((err) => {
         console.log(err);
     })
     .finally(() => {
-        button.textContent = 'Сохранение...';
+        button.textContent = 'Сохранить';
     })
     profileTitle.textContent = nameValue;
     profileDescription.textContent = jobValue;
-    popupProfile.classList.remove('popup_is-opened');
-    document.removeEventListener('keydown', closePopupByEscKey);
-    popupProfile.removeEventListener('click', closePopupByOverlay);
+    closeModal(popupProfile);
 };
 
 function avatarDataSubmit(evt) {
@@ -104,16 +106,17 @@ function avatarDataSubmit(evt) {
     const urlValue = evt.target.querySelector('.popup__input_type_card-url').value;
 
     editAvatar(urlValue)
+    .then(() => {
+        button.textContent = 'Сохранение...';
+    })
     .catch((err) => {
         console.log(err);
     })
     .finally(() => {
-        button.textContent = 'Сохранение...';
+        button.textContent = 'Сохранить';
     })
     profileImage.style.backgroundImage = `url(${urlValue})`;
-    popupAvatar.classList.remove('popup_is-opened');
-    document.removeEventListener('keydown', closePopupByEscKey);
-    popupAvatar.removeEventListener('click', closePopupByOverlay);
+    closeModal(popupAvatar);
 };
 
 formAvatar.addEventListener('submit', avatarDataSubmit);
@@ -127,23 +130,16 @@ profileButton.addEventListener('click', () => {
     popupProfile.querySelector('.popup__input_type_description').value = profileDescription.textContent;
     openModal(popupProfile);
 
-    const button = popupProfile.querySelector('.popup__button');
-    button.textContent = 'Сохранить';
-
-    clearValidation(formProfile, selectorValidation);
+    clearValidation(formProfile, validationConfig);
 });
 
 cardButton.addEventListener('click', () => {
-    const button = popupCard.querySelector('.popup__button');
-    button.textContent = 'Сохранить';
     openModal(popupCard);
 });
 
 avatarButton.addEventListener('click', () => {
-    const button = popupAvatar.querySelector('.popup__button');
-    button.textContent = 'Сохранить';
     openModal(popupAvatar);
-    clearValidation(formAvatar, selectorValidation);
+    clearValidation(formAvatar, validationConfig);
 });
 
 avatarButtonClose.addEventListener('click', () => {
@@ -163,7 +159,7 @@ imageButtonClose.addEventListener('click', () => {
 });
 
 enableValidation(
-    selectorValidation
+    validationConfig
 );
 
 Promise.all([getUserProfile(), getCards()])

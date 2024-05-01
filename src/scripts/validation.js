@@ -1,3 +1,8 @@
+const disableSubmitButton = (button, config) => {
+    button.disabled = true;
+    button.classList.add(config);
+};
+
 const showInputError = (formElement, inputElement, errorMessage, obj) => {
 
     const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
@@ -35,8 +40,7 @@ const hasInvalidInput = (inputList) => {
   
 const toggleButtonState = (inputList, buttonElement, obj) => {
     if (hasInvalidInput(inputList)) {
-        buttonElement.disabled = true;
-        buttonElement.classList.add(obj.inactiveButtonClass); 
+        disableSubmitButton(buttonElement, obj.inactiveButtonClass);
     } else {
         buttonElement.disabled = false;
         buttonElement.classList.remove(obj.inactiveButtonClass);
@@ -51,8 +55,7 @@ const clearValidation = (formElement, obj) => {
         hideInputError(formElement, inputElement, obj);
     });
 
-    buttonElement.disabled = true;
-    buttonElement.classList.add(obj.inactiveButtonClass);
+    disableSubmitButton(buttonElement, obj.inactiveButtonClass);
 };
   
 const setEventListeners = (formElement, obj) => {
