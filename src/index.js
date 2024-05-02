@@ -14,11 +14,6 @@ const validationConfig = {
 }
 
 let userId;
-getUserProfile()
-.then((user) => {
-    userId = user._id;
-})
-.catch(err => console.log(err))
 
 const cardList = document.querySelector('.places__list');
 
@@ -63,11 +58,12 @@ function addCard(evt) {
     const cardName = document.querySelector('.popup__input_type_card-name').value;
     const cardUrl = document.querySelector('.popup__input_type_url').value;
     
+    button.textContent = 'Сохранение...';
+
     postNewCard(cardName, cardUrl)
     .then((data) => {
         const card = createCard(data, likeButton, clickImage, userId);
         cardList.prepend(card);
-        button.textContent = 'Сохранение...';
     })
     .catch(err => console.log(err))
     .finally(() => {
@@ -85,9 +81,12 @@ function profileDataSubmit(evt) {
     const jobValue = evt.target.querySelector('.popup__input_type_description').value;
     const nameValue = evt.target.querySelector('.popup__input_type_name').value;
 
+    button.textContent = 'Сохранение...';
+
     editProfile(nameValue, jobValue)
-    .then(() => {
-        button.textContent = 'Сохранение...';
+    .then((response) => { 
+        profileTitle.textContent = response.name; 
+        profileDescription.textContent = response.about;
     })
     .catch((err) => {
         console.log(err);
@@ -95,8 +94,6 @@ function profileDataSubmit(evt) {
     .finally(() => {
         button.textContent = 'Сохранить';
     })
-    profileTitle.textContent = nameValue;
-    profileDescription.textContent = jobValue;
     closeModal(popupProfile);
 };
 
@@ -105,9 +102,11 @@ function avatarDataSubmit(evt) {
     const button = evt.target.querySelector('.popup__button');
     const urlValue = evt.target.querySelector('.popup__input_type_card-url').value;
 
+    button.textContent = 'Сохранение...';
+
     editAvatar(urlValue)
-    .then(() => {
-        button.textContent = 'Сохранение...';
+    .then(response => {
+        profileImage.style.backgroundImage = `url(${response.avatar})`;
     })
     .catch((err) => {
         console.log(err);
@@ -115,7 +114,6 @@ function avatarDataSubmit(evt) {
     .finally(() => {
         button.textContent = 'Сохранить';
     })
-    profileImage.style.backgroundImage = `url(${urlValue})`;
     closeModal(popupAvatar);
 };
 
@@ -167,6 +165,7 @@ Promise.all([getUserProfile(), getCards()])
     profileTitle.textContent = user.name;
     profileDescription.textContent = user.about;
     profileImage.style.backgroundImage = `url(${user.avatar})`;
+    userId = user._id;
 
     for(let i = 0; i < cards.length; i++) {
         cardList.append(createCard(cards[i], likeButton, clickImage, userId));

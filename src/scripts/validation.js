@@ -1,6 +1,6 @@
-const disableSubmitButton = (button, config) => {
+const disableSubmitButton = (button, inactiveButtonClass) => {
     button.disabled = true;
-    button.classList.add(config);
+    button.classList.add(inactiveButtonClass);
 };
 
 const showInputError = (formElement, inputElement, errorMessage, obj) => {

@@ -4,10 +4,10 @@ editAvatar, deleteCard, addLike, removeLike } from './api';
 function removeButton(evt) {
     const card = evt.target.closest('.card');
     deleteCard(card.id)
-    .catch((err) => {
-        console.log(err);
+    .then(() => {card.remove()})
+    .catch((err) => { 
+        console.log(err); 
     })
-    card.remove();
 };
     
 function likeButton(evt) {

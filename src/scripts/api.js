@@ -47,6 +47,9 @@ export const editProfile = (name, job) => {
             about: job
         })
     })
+    .then((res) => {
+        return handleResponse(res);
+    })
 };
 
 export const getUserProfile = () => {
@@ -59,27 +62,6 @@ export const getUserProfile = () => {
     })
 };
 
-const getUserInfo = () => {
-    return fetch(`${config.baseUrl}/users/me`, {
-        method: 'GET',
-        headers: config.headers
-    })
-    .then((res) => {
-        return handleResponse(res);
-    })
-    .then((data) => {
-        let userInfo =
-        {
-            userAbout: data.about,
-            userAvatar: data.avatar,
-            userCohort: data.cohort,
-            userName: data.name,
-            userId: data._id
-        }
-        return userInfo
-    })
-};
-
 export const editAvatar = (url) => {
     return fetch(`${config.baseUrl}/users/me/avatar`, {
         method: 'PATCH',
@@ -88,6 +70,9 @@ export const editAvatar = (url) => {
             avatar: url
         })
     })
+    .then((res) => {
+        return handleResponse(res);
+    })
 };
 
 export const deleteCard = (id) => {
@@ -95,19 +80,15 @@ export const deleteCard = (id) => {
         method: 'DELETE',
         headers: config.headers
     })
+    .then((res) => {
+        return handleResponse(res);
+    })
 };
 
 export const addLike = (cardId) => {
     return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
         method: 'PUT',
-        headers: config.headers,
-        body: JSON.stringify({
-            about: getUserInfo().userAbout,
-            avatar: getUserInfo().userAvatar,
-            cohort: getUserInfo().userCohort,
-            name: getUserInfo().userName,
-            _id: getUserInfo().userId
-        })
+        headers: config.headers
     })
     .then((res) => {
         return handleResponse(res);
